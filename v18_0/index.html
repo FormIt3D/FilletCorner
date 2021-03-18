@@ -1,28 +1,27 @@
 <html>
-<head><link rel="stylesheet" type="text/css" href="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItPluginStyling.css"/>
-<title>Fillet Corner</title>
-<META NAME="Title" CONTENT="Fillet 2D Corners">
-<META NAME="Author" CONTENT="Autodesk FormIt">
-<script type="text/javascript" src="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItInterface.js"></script>
-<script type="text/javascript" src="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItPluginUI.js"></script>
-<script type="text/javascript" src="FilletCorner_Web.js"></script>
-<script type="text/javascript">
-    //FormItInterface.AddEventListener("DOMContentLoaded");
-</script>
-<script type="text/javascript">
-    FormItInterface.Initialize(function () {
+<head>
+    <link rel="stylesheet" type="text/css" href="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItPluginStyling.css"/>
+    <title>Fillet Corner</title>
+    <META NAME="Title" CONTENT="Fillet 2D Corners">
+    <META NAME="Author" CONTENT="Autodesk FormIt">
+    <script type="text/javascript" src="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormIt.js"></script>
+    <script type="text/javascript" src="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItInterface.js"></script>
+    <script type="text/javascript" src="https://formit3d.github.io/FormItExamplePlugins/SharedPluginFiles/FormItPluginUI.js"></script>
+    <script type="text/javascript" src="FilletCorner.js"></script>
+    <script type="text/javascript">
+        FormItInterface.Initialize(async function () {
 
-        FilletCorner.initializeUI();
-        FilletCorner.updateUI();
+            await FilletCorners.initializeUI();
+            await FilletCorners.updateUI();
 
-        // subscribe to the message sent when units are changed
-        FormItInterface.SubscribeMessage("FormIt.Message.kUnitTypeChanged", function(msg)
-        {
-            var jsonMessage = JSON.parse(msg);
-            FilletCorner.updateUI();
+            // subscribe to the message sent when units are changed
+            FormItInterface.SubscribeMessage("FormIt.Message.kUnitTypeChanged", async function(msg)
+            {
+                var jsonMessage = JSON.parse(msg);
+                await FilletCorners.updateUI();
+            });
+
         });
-
-    });
     </script>
 </head>
 <body>
