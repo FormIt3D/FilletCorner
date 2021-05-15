@@ -12,5 +12,12 @@
             "minor":0
         },
         "path":"v18_0"
+    },
+    {
+        "version":{
+            "major":21,
+            "minor":0
+        },
+        "path":"v21_0"
     }
 ]
