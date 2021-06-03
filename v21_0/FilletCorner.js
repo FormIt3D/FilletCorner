@@ -81,7 +81,6 @@ FilletCorners.execute = async function()
     //console.log("Current selection: " + JSON.stringify(currentSelection));
     if (currentSelection.length == 0)
     {
-        let noSelectionMessage = "Select one or more vertices to begin.";
         let noSelectionMessage = "Select vertices, edges, or faces to begin.";
         await FormIt.UI.ShowNotification(noSelectionMessage, FormIt.NotificationType.Information, 0);
         return;
