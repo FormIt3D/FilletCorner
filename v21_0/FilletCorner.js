@@ -56,6 +56,10 @@ FilletCorners.updateUI = async function()
 
 /*** application code - runs asynchronously from plugin process to communicate with FormIt ***/
 
+// keep track of how many vertices are modified for reporting
+let nModifiedVerticesSuccessful = 0;
+let nModifiedVerticesUnsuccessful = 0;
+
 FilletCorners.execute = async function()
 {
     console.clear();
@@ -75,6 +79,10 @@ FilletCorners.execute = async function()
     // get current selection
     let currentSelection = await FormIt.Selection.GetSelections();
     //console.log("Current selection: " + JSON.stringify(currentSelection));
+
+    // reset the count of successful and unsuccessful fillet operations
+    nModifiedVerticesSuccessful = 0;
+    nModifiedVerticesUnsuccessful = 0;
 
     await FormIt.UndoManagement.BeginState();
 
@@ -96,8 +104,30 @@ FilletCorners.execute = async function()
             //console.log("Vertex ID of current selection (point0): " +  JSON.stringify(nVertexID));
             await FilletCorners.blendVertex(nHistoryID, nVertexID, args.radius, args.cleanup);
         }
+
     }
     
+    // show a message confirming the vertices were blended, or not
+
+    // all vertices were filleted - totally successful
+    if (nModifiedVerticesSuccessful > 0 && nModifiedVerticesUnsuccessful == 0)
+    {
+        let successMessage = "Created a new fillet arc at " + nModifiedVerticesSuccessful + (nModifiedVerticesSuccessful > 1 ? " vertices." : " vertex.");
+        await FormIt.UI.ShowNotification(successMessage, FormIt.NotificationType.Success, 0);
+    }
+    // some were filleted and some failed - partial success
+    else if (nModifiedVerticesSuccessful > 0 && nModifiedVerticesUnsuccessful > 0)
+    {
+        let partialSuccessMessage = "Created a new fillet arc at " + nModifiedVerticesSuccessful + " vertices, but failed to fillet at " + nModifiedVerticesUnsuccessful + (nModifiedVerticesUnsuccessful > 1 ? " vertices." : " vertex.");
+        await FormIt.UI.ShowNotification(partialSuccessMessage, FormIt.NotificationType.Information, 0);
+    }
+    // all failed - no fillet arcs were able to be created
+    else if (nModifiedVerticesSuccessful == 0 && nModifiedVerticesUnsuccessful > 0)
+    {
+        let failureMessage = "Couldn't create a fillet arc at any of the selected vertices.\nTry selecting vertices with only 2 edges attached."
+        await FormIt.UI.ShowNotification(failureMessage, FormIt.NotificationType.Error, 0);
+    }
+
     await FormIt.UndoManagement.EndState("Fillet Corner Plugin");
 }
 
@@ -287,6 +317,9 @@ FilletCorners.blendVertex = async function(nHistoryID, nVertexID, radius, cleanu
             await WSM.APICreateCircleOrArcFromPoints(nHistoryID, newPoint1, newPoint2, centerPoint, nCurveFacets);
             console.log("Successfully created a new arc with radius " + radius + " at vertexID " + nVertexID + ".");
 
+            // increment the number of successful fillet arcs for this operation
+            nModifiedVerticesSuccessful++;
+
             // delete the vertex if the option is checked
             if (cleanup) 
             {
@@ -297,6 +330,9 @@ FilletCorners.blendVertex = async function(nHistoryID, nVertexID, radius, cleanu
     else 
         {
             console.log("Error: too few or too many edges attached at this vertex (vertexID: " + nVertexID + ").");
+
+            // increment the number of failures for this operation
+            nModifiedVerticesUnsuccessful++;
         }
 }
 
