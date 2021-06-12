@@ -35,7 +35,7 @@ FilletCorners.initializeUI = async function()
     document.getElementById(filletRadiusInputID).value = await FormIt.StringConversion.LinearValueToString(5);
 
     // create the delete vertex checkbox
-    contentContainer.appendChild(new FormIt.PluginUI.CheckboxModule('Delete Vertex', 'deleteVertexCheckboxModule', 'multiModuleContainer', deleteVertexInputID).element);
+    contentContainer.appendChild(new FormIt.PluginUI.CheckboxModule('Delete original vertices', 'deleteVertexCheckboxModule', 'multiModuleContainer', deleteVertexInputID).element);
 
     // create the fillet corners button
     contentContainer.appendChild(new FormIt.PluginUI.Button('Fillet Corners', FilletCorners.execute).element);
