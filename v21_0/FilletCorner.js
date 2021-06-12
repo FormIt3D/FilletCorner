@@ -243,7 +243,7 @@ FilletCorners.execute = async function()
     // all failed - no fillet arcs were able to be created
     else if (aFinalCompositeEdges.length == 0 || (nModifiedVerticesSuccessful == 0 && nModifiedVerticesUnsuccessful > 0))
     {
-        let failureMessage = "Couldn't create a fillet arc at any of the selected vertices.\nTry selecting vertices with only 2 edges attached."
+        let failureMessage = "Failed to create a fillet arc given the selected geometry.\nTry selecting faces, connected edges, or vertices with at least 2 attached edges, and try again."
         await FormIt.UI.ShowNotification(failureMessage, FormIt.NotificationType.Error, 0);
     }
 
